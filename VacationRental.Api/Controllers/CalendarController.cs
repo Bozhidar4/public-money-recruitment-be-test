@@ -38,7 +38,8 @@ namespace VacationRental.Api.Controllers
                 var date = new CalendarDateViewModel
                 {
                     Date = start.Date.AddDays(i),
-                    Bookings = new List<CalendarBookingViewModel>()
+                    Bookings = new List<CalendarBookingViewModel>(),
+                    PreparationTimes = new List<PreparationTimeViewModel>()
                 };
 
                 foreach (var booking in _bookings.Values)
@@ -46,7 +47,16 @@ namespace VacationRental.Api.Controllers
                     if (booking.RentalId == rentalId
                         && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
                     {
-                        date.Bookings.Add(new CalendarBookingViewModel { Id = booking.Id });
+                        date.Bookings.Add(new CalendarBookingViewModel
+                        {
+                            Id = booking.Id,
+                            Unit = booking.RentalId
+                        });
+
+                        date.PreparationTimes.Add(new PreparationTimeViewModel
+                        {
+                            Unit = booking.RentalId
+                        });
                     }
                 }
 
