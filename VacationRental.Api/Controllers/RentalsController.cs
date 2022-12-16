@@ -17,15 +17,21 @@ namespace VacationRental.Api.Controllers
 
         [HttpGet]
         [Route("{rentalId:int}")]
-        public RentalViewModel Get(int rentalId)
+        public IActionResult Get(int rentalId)
         {
-            return _rentalService.Get(rentalId);
+            return Ok(_rentalService.Get(rentalId));
         }
 
         [HttpPost]
-        public ResourceIdViewModel Post(RentalBindingModel model)
+        public IActionResult Post(RentalBindingModel model)
         {
-            return _rentalService.Add(model);
+            return Ok(_rentalService.Add(model));
+        }
+
+        [HttpPut]
+        public IActionResult Put(int rentailId, [FromBody] RentalUpdateModel model)
+        {
+            return Ok(_rentalService.Update(rentailId, model));
         }
     }
 }

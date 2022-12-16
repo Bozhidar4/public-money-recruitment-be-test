@@ -11,13 +11,16 @@ namespace VacationRental.Api.Services
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalRepository _rentalRepository;
+        private readonly IHelperService _helperService;
 
         public CalendarService(
             IBookingRepository bookingRepository,
-            IRentalRepository rentalRepository)
+            IRentalRepository rentalRepository,
+            IHelperService helperService)
         {
             _bookingRepository = bookingRepository;
             _rentalRepository = rentalRepository;
+            _helperService = helperService;
         }
 
         public CalendarViewModel Get(int rentalId, DateTime start, int nights)
@@ -25,12 +28,10 @@ namespace VacationRental.Api.Services
             if (nights < 0)
             {
                 throw new ApplicationException("Nights must be positive");
-            }  
-            if (!_rentalRepository.GetAll().ContainsKey(rentalId))
-            {
-                throw new ApplicationException("Rental not found");
             }
-               
+
+            _helperService.CheckRentalExistence(rentalId);
+
             var result = new CalendarViewModel
             {
                 RentalId = rentalId,

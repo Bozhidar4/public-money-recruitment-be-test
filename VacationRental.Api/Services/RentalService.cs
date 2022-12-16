@@ -10,22 +10,22 @@ namespace VacationRental.Api.Services
     {
         private readonly IMapper _mapper;
         private readonly IRentalRepository _rentalRepository;
+        private readonly IHelperService _helperService;
 
         public RentalService(
             IMapper mapper,
-            IRentalRepository rentalRepository)
+            IRentalRepository rentalRepository,
+            IHelperService helperService)
         {
             _mapper = mapper;
             _rentalRepository = rentalRepository;
+            _helperService = helperService;
         }
 
         public RentalViewModel Get(int rentalId)
         {
-            if (!_rentalRepository.GetAll().ContainsKey(rentalId))
-            {
-                throw new ApplicationException("Rental not found");
-            }
-                
+            _helperService.CheckRentalExistence(rentalId);
+
             return _mapper.Map<RentalViewModel>(_rentalRepository.Get(rentalId));
         }
 
@@ -34,6 +34,16 @@ namespace VacationRental.Api.Services
             var newRentalId = _rentalRepository.Add(_mapper.Map<Rental>(rentalModel));
 
             return new ResourceIdViewModel { Id = newRentalId };
+        }
+
+        public ResourceIdViewModel Update(int rentalId, RentalUpdateModel model)
+        {
+            _helperService.CheckRentalExistence(rentalId);
+
+            var rentalMapped = _mapper.Map<Rental>(model);
+            rentalMapped.Id = rentalId;
+
+            return new ResourceIdViewModel { Id = _rentalRepository.Update(rentalMapped) };
         }
     }
 }

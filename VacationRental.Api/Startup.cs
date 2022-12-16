@@ -43,6 +43,7 @@ namespace VacationRental.Api
             services.AddSingleton<IBookingService, BookingService>();
             services.AddSingleton<IRentalService, RentalService>();
             services.AddSingleton<ICalendarService, CalendarService>();
+            services.AddSingleton<IHelperService, HelperService>();
 
             ConfigureRepositories(services);
             ConfigureAutoMapper(services);

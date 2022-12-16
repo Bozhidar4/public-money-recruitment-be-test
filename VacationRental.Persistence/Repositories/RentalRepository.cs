@@ -35,5 +35,12 @@ namespace VacationRental.Persistence.Repositories
 
             return id;
         }
+
+        public int Update(Rental rental)
+        {
+            _rentals[rental.Id] = rental;
+
+            return rental.Id;
+        }
     }
 }

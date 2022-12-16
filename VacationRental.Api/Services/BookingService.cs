@@ -13,15 +13,18 @@ namespace VacationRental.Api.Services
         private readonly IMapper _mapper;
         private readonly IBookingRepository _bookingRepository;
         private readonly IRentalRepository _rentalRepository;
+        private readonly IHelperService _helperService;
 
         public BookingService(
             IMapper mapper,
             IBookingRepository bookingRepository,
-            IRentalRepository rentalRepository)
+            IRentalRepository rentalRepository,
+            IHelperService helperService)
         {
             _mapper = mapper;
             _bookingRepository = bookingRepository;
             _rentalRepository = rentalRepository;
+            _helperService = helperService;
         }
 
         public BookingViewModel Get(int bookingId)
@@ -34,40 +37,29 @@ namespace VacationRental.Api.Services
             return _mapper.Map<BookingViewModel>(_bookingRepository.Get(bookingId));
         }
 
-        public ResourceIdViewModel Add(BookingBindingModel bookingModel)
+        public ResourceIdViewModel Add(BookingBindingModel newBooking)
         {
-            if (bookingModel.Nights <= 0)
+            if (newBooking.Nights <= 0)
             {
                 throw new ApplicationException("Nights must be positive");
             }
-             
+
+            _helperService.CheckRentalExistence(newBooking.RentalId);
+
+            var bookings = GetAllBookings();
             var rentals = _rentalRepository.GetAll();
 
-            if (!rentals.ContainsKey(bookingModel.RentalId))
+            for (var i = 0; i < newBooking.Nights; i++)
             {
-                throw new ApplicationException("Rental not found");
-            }
-                
-            var bookings = GetAllBookings();
+                bool allUnitsAccupied = CheckForAvailableUnits(newBooking, bookings, rentals);
 
-            for (var i = 0; i < bookingModel.Nights; i++)
-            {
-                var count = 0;
-                foreach (var booking in bookings.Values)
+                if (allUnitsAccupied)
                 {
-                    if (booking.RentalId == bookingModel.RentalId
-                        && (booking.Start <= bookingModel.Start.Date && booking.Start.AddDays(booking.Nights) > bookingModel.Start.Date)
-                        || (booking.Start < bookingModel.Start.AddDays(bookingModel.Nights) && booking.Start.AddDays(booking.Nights) >= bookingModel.Start.AddDays(bookingModel.Nights))
-                        || (booking.Start > bookingModel.Start && booking.Start.AddDays(booking.Nights) < bookingModel.Start.AddDays(bookingModel.Nights)))
-                    {
-                        count++;
-                    }
-                }
-                if (count >= rentals[bookingModel.RentalId].Units)
                     throw new ApplicationException("Not available");
+                }
             }
 
-            var newBookingId = _bookingRepository.Add(_mapper.Map<Booking>(bookingModel));
+            var newBookingId = _bookingRepository.Add(_mapper.Map<Booking>(newBooking));
 
             return new ResourceIdViewModel { Id = newBookingId };
         }
@@ -75,6 +67,31 @@ namespace VacationRental.Api.Services
         private IDictionary<int, Booking> GetAllBookings()
         {
             return _bookingRepository.GetAll();
+        }
+
+        private bool CheckForAvailableUnits(BookingBindingModel newBooking,
+                                            IDictionary<int, Booking> bookings,
+                                            IDictionary<int, Rental> rentals)
+        {
+            var count = 0;
+            foreach (var booking in bookings.Values)
+            {
+                var currentBookingDays = booking.Nights + rentals[booking.RentalId].PreparationTimeInDays;
+                var newBookingDays = newBooking.Nights + rentals[booking.RentalId].PreparationTimeInDays;
+
+                if (booking.RentalId == newBooking.RentalId
+                    && (booking.Start <= newBooking.Start.Date 
+                        && booking.Start.AddDays(currentBookingDays) > newBooking.Start.Date)
+                    || (booking.Start < newBooking.Start.AddDays(newBookingDays) 
+                        && booking.Start.AddDays(currentBookingDays) >= newBooking.Start.AddDays(newBookingDays))
+                    || (booking.Start > newBooking.Start 
+                        && booking.Start.AddDays(currentBookingDays) < newBooking.Start.AddDays(newBookingDays)))
+                {
+                    count++;
+                }
+            }
+
+            return count >= rentals[newBooking.RentalId].Units;
         }
     }
 }
