@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Services.Interfaces;
 
 namespace VacationRental.Api.Controllers
@@ -16,9 +16,9 @@ namespace VacationRental.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(CalendarBindingModel model)
+        public IActionResult Get(int rentalId, DateTime start, int nights)
         {
-            return Ok(_calendarService.Get(model));
+            return Ok(_calendarService.Get(rentalId, start, nights));
         }
     }
 }

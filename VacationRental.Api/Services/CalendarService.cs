@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using VacationRental.Api.Core;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
@@ -18,27 +20,32 @@ namespace VacationRental.Api.Services
             _helperService = helperService;
         }
 
-        public CalendarViewModel Get(CalendarBindingModel model)
+        public CalendarViewModel Get(int rentalId, DateTime start, int nights)
         {
-            _helperService.CheckRentalExistence(model.RentalId);
+            if (nights < 0)
+            {
+                throw new ApplicationException(ErrorMessages.NightCountErrorMessage);
+            }
+
+            _helperService.CheckRentalExistence(rentalId);
 
             var result = new CalendarViewModel
             {
-                RentalId = model.RentalId,
+                RentalId = rentalId,
                 Dates = new List<CalendarDateViewModel>()
             };
-            for (var i = 0; i < model.Nights; i++)
+            for (var i = 0; i < nights; i++)
             {
                 var date = new CalendarDateViewModel
                 {
-                    Date = model.StartDate.Date.AddDays(i),
+                    Date = start.Date.AddDays(i),
                     Bookings = new List<CalendarBookingViewModel>(),
                     PreparationTimes = new List<PreparationTimeViewModel>()
                 };
 
                 foreach (var booking in _bookingRepository.GetAll().Values)
                 {
-                    if (booking.RentalId == model.RentalId
+                    if (booking.RentalId == rentalId
                         && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
                     {
                         date.Bookings.Add(new CalendarBookingViewModel
