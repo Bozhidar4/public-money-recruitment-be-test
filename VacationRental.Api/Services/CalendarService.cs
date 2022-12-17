@@ -1,54 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
-using VacationRental.Domain.Entities.Rentals;
 
 namespace VacationRental.Api.Services
 {
     public class CalendarService : ICalendarService
     {
         private readonly IBookingRepository _bookingRepository;
-        private readonly IRentalRepository _rentalRepository;
         private readonly IHelperService _helperService;
 
         public CalendarService(
             IBookingRepository bookingRepository,
-            IRentalRepository rentalRepository,
             IHelperService helperService)
         {
             _bookingRepository = bookingRepository;
-            _rentalRepository = rentalRepository;
             _helperService = helperService;
         }
 
-        public CalendarViewModel Get(int rentalId, DateTime start, int nights)
+        public CalendarViewModel Get(CalendarBindingModel model)
         {
-            if (nights < 0)
-            {
-                throw new ApplicationException("Nights must be positive");
-            }
-
-            _helperService.CheckRentalExistence(rentalId);
+            _helperService.CheckRentalExistence(model.RentalId);
 
             var result = new CalendarViewModel
             {
-                RentalId = rentalId,
+                RentalId = model.RentalId,
                 Dates = new List<CalendarDateViewModel>()
             };
-            for (var i = 0; i < nights; i++)
+            for (var i = 0; i < model.Nights; i++)
             {
                 var date = new CalendarDateViewModel
                 {
-                    Date = start.Date.AddDays(i),
+                    Date = model.StartDate.Date.AddDays(i),
                     Bookings = new List<CalendarBookingViewModel>(),
                     PreparationTimes = new List<PreparationTimeViewModel>()
                 };
 
                 foreach (var booking in _bookingRepository.GetAll().Values)
                 {
-                    if (booking.RentalId == rentalId
+                    if (booking.RentalId == model.RentalId
                         && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
                     {
                         date.Bookings.Add(new CalendarBookingViewModel

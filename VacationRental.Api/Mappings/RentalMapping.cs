@@ -10,7 +10,6 @@ namespace VacationRental.Api.Mappings
         {
             CreateMap<Rental, RentalViewModel>();
             CreateMap<RentalBindingModel, Rental>();
-            CreateMap<RentalUpdateModel, Rental>();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace VacationRental.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(int rentailId, [FromBody] RentalUpdateModel model)
+        public IActionResult Put(int rentailId, [FromBody] RentalBindingModel model)
         {
             return Ok(_rentalService.Update(rentailId, model));
         }
