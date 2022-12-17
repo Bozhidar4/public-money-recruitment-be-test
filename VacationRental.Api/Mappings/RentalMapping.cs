@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using VacationRental.Api.Models;
-using VacationRental.Domain.Entities.Rentals;
+using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Api.Mappings
 {

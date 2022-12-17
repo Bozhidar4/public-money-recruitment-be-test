@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using VacationRental.Domain.Entities.Rentals;
+using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Persistence.Repositories
 {

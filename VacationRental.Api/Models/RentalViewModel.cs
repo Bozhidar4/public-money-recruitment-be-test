@@ -1,4 +1,4 @@
-﻿using VacationRental.Domain.Entities.Rentals;
+﻿using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Api.Models
 {

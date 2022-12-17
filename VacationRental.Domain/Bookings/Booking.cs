@@ -1,5 +1,5 @@
 ﻿using System;
-using VacationRental.Domain.Entities.Core;
+using VacationRental.Domain.Core;
 
 namespace VacationRental.Domain.Bookings
 {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using VacationRental.Domain.Entities.Rentals;
 
-namespace VacationRental.Domain.Entities.Core
+namespace VacationRental.Domain.Core
 {
     public interface IRepository<T> where T : class
     {

@@ -12,7 +12,7 @@ using VacationRental.Api.Models;
 using VacationRental.Api.Services;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
-using VacationRental.Domain.Entities.Rentals;
+using VacationRental.Domain.Rentals;
 using VacationRental.Persistence.Repositories;
 
 namespace VacationRental.Api
@@ -37,8 +37,6 @@ namespace VacationRental.Api
 
             services.AddSingleton<IDictionary<int, Rental>>(new Dictionary<int, Rental>());
             services.AddSingleton<IDictionary<int, Booking>>(new Dictionary<int, Booking>());
-            services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
-            services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
 
             services.AddSingleton<IBookingService, BookingService>();
             services.AddSingleton<IRentalService, RentalService>();

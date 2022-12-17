@@ -24,7 +24,7 @@ namespace VacationRental.Api.Services
         {
             if (nights < 0)
             {
-                throw new ApplicationException(ErrorMessages.NightCountErrorMessage);
+                throw new ApplicationException(VacationRentalConstants.NightCountErrorMessage);
             }
 
             _helperService.CheckRentalExistence(rentalId);

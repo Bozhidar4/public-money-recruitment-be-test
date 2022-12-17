@@ -1,4 +1,4 @@
-﻿namespace VacationRental.Domain.Entities.Core
+﻿namespace VacationRental.Domain.Core
 {
     public abstract class Entity<T>
     {

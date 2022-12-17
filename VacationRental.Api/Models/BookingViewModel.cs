@@ -1,5 +1,4 @@
-﻿using System;
-using VacationRental.Domain.Bookings;
+﻿using VacationRental.Domain.Bookings;
 
 namespace VacationRental.Api.Models
 {

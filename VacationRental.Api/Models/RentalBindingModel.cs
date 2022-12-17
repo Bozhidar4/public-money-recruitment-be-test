@@ -5,9 +5,9 @@ namespace VacationRental.Api.Models
 {
     public class RentalBindingModel
     {
-        [Range(1, int.MaxValue, ErrorMessage = ErrorMessages.UnitCountErrorMessage)]
+        [Range(VacationRentalConstants.MinimumValue, int.MaxValue, ErrorMessage = VacationRentalConstants.UnitCountErrorMessage)]
         public int Units { get; set; }
-        [Range(1, int.MaxValue, ErrorMessage = ErrorMessages.PreparationDaysCountErrorMessage)]
+        [Range(VacationRentalConstants.MinimumValue, int.MaxValue, ErrorMessage = VacationRentalConstants.PreparationDaysCountErrorMessage)]
         public int PreparationTimeInDays { get; set; }
     }
 }

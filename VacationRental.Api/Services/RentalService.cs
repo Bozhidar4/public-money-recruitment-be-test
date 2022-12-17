@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
-using VacationRental.Domain.Entities.Rentals;
+using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Api.Services
 {
@@ -74,7 +73,6 @@ namespace VacationRental.Api.Services
                 Units = model.Units,
                 PreparationTimeInDays = model.PreparationTimeInDays
             };
-            
             var updatedRentals = new Dictionary<int, Rental>
             {
                 { rentalId, updatedRental }

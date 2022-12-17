@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using VacationRental.Api.Core;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
-using VacationRental.Domain.Entities.Rentals;
+using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Api.Services
 {
@@ -31,7 +32,7 @@ namespace VacationRental.Api.Services
         {
             if (!GetAllBookings().ContainsKey(bookingId))
             {
-                throw new ApplicationException("Booking not found");
+                throw new ApplicationException(VacationRentalConstants.BookingNotFoundErrorMessage);
             }
              
             return _mapper.Map<BookingViewModel>(_bookingRepository.Get(bookingId));
@@ -51,7 +52,7 @@ namespace VacationRental.Api.Services
 
                 if (allUnitsAccupied)
                 {
-                    throw new ApplicationException("Not available");
+                    throw new ApplicationException(VacationRentalConstants.NotAvailableErrorMessage);
                 }
             }
 

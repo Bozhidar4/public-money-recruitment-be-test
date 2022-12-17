@@ -16,7 +16,7 @@ namespace VacationRental.Api.Models
 
         private DateTime _startIgnoreTime;
 
-        [Range(1, int.MaxValue, ErrorMessage = ErrorMessages.NightCountErrorMessage)]
+        [Range(VacationRentalConstants.MinimumValue, int.MaxValue, ErrorMessage = VacationRentalConstants.NightCountErrorMessage)]
         public int Nights { get; set; }
     }
 }

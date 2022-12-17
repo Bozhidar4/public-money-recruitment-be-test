@@ -1,6 +1,6 @@
-﻿using VacationRental.Domain.Entities.Core;
+﻿using VacationRental.Domain.Core;
 
-namespace VacationRental.Domain.Entities.Rentals
+namespace VacationRental.Domain.Rentals
 {
     public class Rental : Entity<int>
     {
