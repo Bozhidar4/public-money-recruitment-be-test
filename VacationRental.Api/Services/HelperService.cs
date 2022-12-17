@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VacationRental.Api.Core;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
@@ -16,9 +17,10 @@ namespace VacationRental.Api.Services
             _rentalRepository = rentalRepository;
         }
 
-        public void CheckRentalExistence(int rentalId)
+        public async Task CheckRentalExistence(int rentalId)
         {
-            if (!_rentalRepository.GetAll().ContainsKey(rentalId))
+            var rentals = await _rentalRepository.GetAll();
+            if (!rentals.ContainsKey(rentalId))
             {
                 throw new ApplicationException(VacationRentalConstants.RentalNotFoundErrorMessage);
             }

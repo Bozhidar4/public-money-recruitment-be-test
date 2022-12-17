@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 
@@ -17,15 +18,15 @@ namespace VacationRental.Api.Controllers
 
         [HttpGet]
         [Route("{bookingId:int}")]
-        public IActionResult Get(int bookingId)
+        public async Task<IActionResult> Get(int bookingId)
         {
-            return Ok(_bookingService.Get(bookingId));
+            return Ok(await _bookingService.Get(bookingId));
         }
 
         [HttpPost]
-        public IActionResult Post(BookingBindingModel model)
+        public async Task<IActionResult> Post(BookingBindingModel model)
         {
-            return Ok(_bookingService.Add(model));
+            return Ok(await _bookingService.Add(model));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Services.Interfaces;
 
@@ -16,9 +17,9 @@ namespace VacationRental.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(int rentalId, DateTime start, int nights)
+        public async Task<IActionResult> Get(int rentalId, DateTime start, int nights)
         {
-            return Ok(_calendarService.Get(rentalId, start, nights));
+            return Ok(await _calendarService.Get(rentalId, start, nights));
         }
     }
 }

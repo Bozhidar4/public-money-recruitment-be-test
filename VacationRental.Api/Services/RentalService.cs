@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
@@ -27,43 +29,45 @@ namespace VacationRental.Api.Services
             _helperService = helperService;
         }
 
-        public RentalViewModel Get(int rentalId)
+        public async Task<RentalViewModel> Get(int rentalId)
         {
-            _helperService.CheckRentalExistence(rentalId);
+            await _helperService.CheckRentalExistence(rentalId);
 
-            return _mapper.Map<RentalViewModel>(_rentalRepository.Get(rentalId));
+            return _mapper.Map<RentalViewModel>(await _rentalRepository.Get(rentalId));
         }
 
-        public ResourceIdViewModel Add(RentalBindingModel rentalModel)
+        public async Task<ResourceIdViewModel> Add(RentalBindingModel rentalModel)
         {
-            var newRentalId = _rentalRepository.Add(_mapper.Map<Rental>(rentalModel));
+            var newRentalId = await _rentalRepository.Add(_mapper.Map<Rental>(rentalModel));
 
             return new ResourceIdViewModel { Id = newRentalId };
         }
 
-        public ResourceIdViewModel Update(int rentalId, RentalBindingModel model)
+        public async Task<ResourceIdViewModel> Update(RentalUpdateModel model)
         {
-            _helperService.CheckRentalExistence(rentalId);
+            await _helperService.CheckRentalExistence(model.Id);
 
             var newBookings = new Dictionary<int, Booking>();
-            var rentalBookings = _bookingRepository.GetAll().Where(b => b.Value.RentalId == rentalId);
+            var bookings = await _bookingRepository.GetAll();
+            var rentalBookings = bookings.Where(b => b.Value.RentalId == model.Id);
 
-            var hasConflict = CheckRentalBookingsForConflict(rentalId, model, rentalBookings, newBookings);
-            int updatedRentalId = 0;
+            var hasConflict = CheckRentalBookingsForConflict(model.Id, model, rentalBookings, newBookings);
 
-            if (!hasConflict)
+            if (hasConflict)
             {
-                var rentalMapped = _mapper.Map<Rental>(model);
-                rentalMapped.Id = rentalId;
-                updatedRentalId = _rentalRepository.Update(rentalMapped);
-                rentalBookings = newBookings;
+                throw new ApplicationException("There is overlapping, the update cannot be performed.");
             }
-            
+
+            var rentalMapped = _mapper.Map<Rental>(model);
+            rentalMapped.Id = model.Id;
+            var updatedRentalId = await _rentalRepository.Update(rentalMapped);
+            rentalBookings = newBookings;
+
             return new ResourceIdViewModel { Id = updatedRentalId };
         }
 
         private bool CheckRentalBookingsForConflict(int rentalId,
-                                                    RentalBindingModel model,
+                                                    RentalUpdateModel model,
                                                     IEnumerable<KeyValuePair<int, Booking>> rentalBookings,
                                                     Dictionary<int, Booking> newBookings)
         {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using VacationRental.Domain.Rentals;
 
 namespace VacationRental.Persistence.Repositories
@@ -12,17 +13,17 @@ namespace VacationRental.Persistence.Repositories
             _rentals = rentals;
         }
 
-        public Rental Get(int id)
+        public async Task<Rental> Get(int id)
         {
-            return _rentals[id];
+            return await Task.FromResult(_rentals[id]);
         }
 
-        public IDictionary<int, Rental> GetAll()
+        public async Task<IDictionary<int, Rental>> GetAll()
         {
-            return _rentals;
+            return await Task.FromResult(_rentals);
         }
 
-        public int Add(Rental rental)
+        public async Task<int> Add(Rental rental)
         {
             int id = _rentals.Keys.Count + 1;
 
@@ -33,14 +34,14 @@ namespace VacationRental.Persistence.Repositories
                 PreparationTimeInDays = rental.PreparationTimeInDays
             });
 
-            return id;
+            return await Task.FromResult(id);
         }
 
-        public int Update(Rental rental)
+        public async Task<int> Update(Rental rental)
         {
             _rentals[rental.Id] = rental;
 
-            return rental.Id;
+            return await Task.FromResult(rental.Id);
         }
     }
 }

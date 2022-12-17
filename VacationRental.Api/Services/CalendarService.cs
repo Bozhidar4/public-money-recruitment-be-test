@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VacationRental.Api.Core;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
@@ -20,20 +21,23 @@ namespace VacationRental.Api.Services
             _helperService = helperService;
         }
 
-        public CalendarViewModel Get(int rentalId, DateTime start, int nights)
+        public async Task<CalendarViewModel> Get(int rentalId, DateTime start, int nights)
         {
             if (nights < 0)
             {
                 throw new ApplicationException(VacationRentalConstants.NightCountErrorMessage);
             }
 
-            _helperService.CheckRentalExistence(rentalId);
+            await _helperService.CheckRentalExistence(rentalId);
 
             var result = new CalendarViewModel
             {
                 RentalId = rentalId,
                 Dates = new List<CalendarDateViewModel>()
             };
+
+            var bookings = await _bookingRepository.GetAll();
+
             for (var i = 0; i < nights; i++)
             {
                 var date = new CalendarDateViewModel
@@ -43,7 +47,7 @@ namespace VacationRental.Api.Services
                     PreparationTimes = new List<PreparationTimeViewModel>()
                 };
 
-                foreach (var booking in _bookingRepository.GetAll().Values)
+                foreach (var booking in bookings.Values)
                 {
                     if (booking.RentalId == rentalId
                         && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)

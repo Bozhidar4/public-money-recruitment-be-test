@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VacationRental.Api.Core;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
@@ -28,22 +29,24 @@ namespace VacationRental.Api.Services
             _helperService = helperService;
         }
 
-        public BookingViewModel Get(int bookingId)
+        public async Task<BookingViewModel> Get(int bookingId)
         {
-            if (!GetAllBookings().ContainsKey(bookingId))
+            var bookings = await GetAllBookings();
+
+            if (!bookings.ContainsKey(bookingId))
             {
                 throw new ApplicationException(VacationRentalConstants.BookingNotFoundErrorMessage);
             }
              
-            return _mapper.Map<BookingViewModel>(_bookingRepository.Get(bookingId));
+            return _mapper.Map<BookingViewModel>(await _bookingRepository.Get(bookingId));
         }
 
-        public ResourceIdViewModel Add(BookingBindingModel newBooking)
+        public async Task<ResourceIdViewModel> Add(BookingBindingModel newBooking)
         {
-            _helperService.CheckRentalExistence(newBooking.RentalId);
+            await _helperService.CheckRentalExistence(newBooking.RentalId);
 
-            var bookings = GetAllBookings();
-            var rentals = _rentalRepository.GetAll();
+            var bookings = await GetAllBookings();
+            var rentals = await _rentalRepository.GetAll();
             var newBookingMapped = _mapper.Map<Booking>(newBooking);
 
             for (var i = 0; i < newBooking.Nights; i++)
@@ -56,14 +59,14 @@ namespace VacationRental.Api.Services
                 }
             }
 
-            var newBookingId = _bookingRepository.Add(newBookingMapped);
+            var newBookingId = await _bookingRepository.Add(newBookingMapped);
 
             return new ResourceIdViewModel { Id = newBookingId };
         }
 
-        private IDictionary<int, Booking> GetAllBookings()
+        private async Task<IDictionary<int, Booking>> GetAllBookings()
         {
-            return _bookingRepository.GetAll();
+            return await _bookingRepository.GetAll();
         } 
     }
 }

@@ -1,9 +1,10 @@
-﻿using VacationRental.Domain.Core;
+﻿using System.Threading.Tasks;
+using VacationRental.Domain.Core;
 
 namespace VacationRental.Domain.Bookings
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-        int Add(Booking booking);
+        Task<int> Add(Booking booking);
     }
 }

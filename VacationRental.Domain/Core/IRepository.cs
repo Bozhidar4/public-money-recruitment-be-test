@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace VacationRental.Domain.Core
 {
     public interface IRepository<T> where T : class
     {
-        T Get(int id);
-        IDictionary<int, T> GetAll();
+        Task<T> Get(int id);
+        Task<IDictionary<int, T>> GetAll();
     }
 }
