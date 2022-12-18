@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VacationRental.Api.Core;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
@@ -55,7 +56,7 @@ namespace VacationRental.Api.Services
 
             if (hasConflict)
             {
-                throw new ApplicationException("There is overlapping, the update cannot be performed.");
+                throw new ApplicationException(VacationRentalConstants.RentalOverlappingErrorMessage);
             }
 
             var rentalMapped = _mapper.Map<Rental>(model);
@@ -71,15 +72,15 @@ namespace VacationRental.Api.Services
                                                     IEnumerable<KeyValuePair<int, Booking>> rentalBookings,
                                                     Dictionary<int, Booking> newBookings)
         {
-            var updatedRental = new Rental
-            {
-                Id = rentalId,
-                Units = model.Units,
-                PreparationTimeInDays = model.PreparationTimeInDays
-            };
             var updatedRentals = new Dictionary<int, Rental>
             {
-                { rentalId, updatedRental }
+                { rentalId, new Rental
+                    {
+                        Id = rentalId,
+                        Units = model.Units,
+                        PreparationTimeInDays = model.PreparationTimeInDays
+                    }
+                }
             };
 
             bool bookingsHaveConflict = false;

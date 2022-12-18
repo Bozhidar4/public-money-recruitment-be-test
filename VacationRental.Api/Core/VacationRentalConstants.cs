@@ -10,5 +10,6 @@
         public const string PreparationDaysCountErrorMessage = "Preparation days must be positive.";
         public const string BookingNotFoundErrorMessage = "Booking not found";
         public const string RentalNotFoundErrorMessage = "Rental not found.";
+        public const string RentalOverlappingErrorMessage = "There is overlapping, the update cannot be performed.";
     }
 }

@@ -6,9 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
-using VacationRental.Api.Core;
+using VacationRental.Api.Core.Extensions;
 using VacationRental.Api.Mappings;
-using VacationRental.Api.Models;
 using VacationRental.Api.Services;
 using VacationRental.Api.Services.Interfaces;
 using VacationRental.Domain.Bookings;
@@ -33,8 +32,6 @@ namespace VacationRental.Api
 
             services.AddSwaggerGen(opts => opts.SwaggerDoc("v1", new Info { Title = "Vacation rental information", Version = "v1" }));
 
-            services.AddScoped<ErrorHandlingMiddleware>();
-
             services.AddSingleton<IDictionary<int, Rental>>(new Dictionary<int, Rental>());
             services.AddSingleton<IDictionary<int, Booking>>(new Dictionary<int, Booking>());
 
@@ -55,11 +52,11 @@ namespace VacationRental.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.ConfigureExceptionHandler();
+
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(opts => opts.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationRental v1"));
-
-            app.UseMiddleware<ErrorHandlingMiddleware>();
         }
 
         private void ConfigureRepositories(IServiceCollection services)
