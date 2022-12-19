@@ -20,6 +20,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenCompleteRequest_WhenPutRental_ThenAGetReturnsTheCorrectValuesOfTheUpdatedRental()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = 2,
@@ -47,8 +48,10 @@ namespace VacationRental.Api.Tests
                 putResult = await putResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            // Act
             using (var getResponse = await _fixture.Client.GetAsync($"/api/v1/rentals/{putResult.Id}"))
             {
+                // Assert
                 Assert.True(getResponse.IsSuccessStatusCode);
 
                 var getResult = await getResponse.Content.ReadAsAsync<RentalViewModel>();
@@ -60,6 +63,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenCompleteRequestAndBookings_WhenPutRental_ThenAGetReturnsTheCorrectValuesOfTheUpdatedRental()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = 2,
@@ -111,8 +115,10 @@ namespace VacationRental.Api.Tests
                 putResult = await putResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            // Act
             using (var getResponse = await _fixture.Client.GetAsync($"/api/v1/rentals/{putResult.Id}"))
             {
+                // Assert
                 Assert.True(getResponse.IsSuccessStatusCode);
 
                 var getResult = await getResponse.Content.ReadAsAsync<RentalViewModel>();
@@ -124,6 +130,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenNoRentals_WhenPutRental_ThenAPutReturnsAnError()
         {
+            // Arrange
             _fixture = new IntegrationFixture();
 
             var updatedRequest = new RentalUpdateModel
@@ -133,9 +140,10 @@ namespace VacationRental.Api.Tests
                 PreparationTimeInDays = 1
             };
 
-            ResourceIdViewModel putResult;
+            // Act
             using (var putResponse = await _fixture.Client.PutAsJsonAsync($"/api/v1/rentals", updatedRequest))
             {
+                // Assert
                 Assert.False(putResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.InternalServerError, putResponse.StatusCode);
             }
@@ -144,6 +152,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenUnitsIsNotPosiive_WhenPutRental_ThenAPutReturnsAnError()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = 2,
@@ -164,9 +173,10 @@ namespace VacationRental.Api.Tests
                 PreparationTimeInDays = 1
             };
 
-            ResourceIdViewModel putResult;
+            // Act
             using (var putResponse = await _fixture.Client.PutAsJsonAsync($"/api/v1/rentals", updatedRequest))
             {
+                // Assert
                 Assert.False(putResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, putResponse.StatusCode);
             }
@@ -175,6 +185,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenPreparationTimeInDaysIsZero_WhenPutRental_ThenAPutReturnsAnError()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = 2,
@@ -195,9 +206,10 @@ namespace VacationRental.Api.Tests
                 PreparationTimeInDays = 0
             };
 
-            ResourceIdViewModel putResult;
+            // Act
             using (var putResponse = await _fixture.Client.PutAsJsonAsync($"/api/v1/rentals", updatedRequest))
             {
+                // Assert
                 Assert.False(putResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, putResponse.StatusCode);
             }

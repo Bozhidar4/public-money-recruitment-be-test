@@ -51,9 +51,9 @@ namespace VacationRental.Api.Services
 
             for (var i = 0; i < newBooking.Nights; i++)
             {
-                bool allUnitsAccupied = _helperService.CheckForUnitOverlapping(newBookingMapped, bookings, rentals);
+                bool allUnitsOccupied = _helperService.CheckForUnitOverlapping(newBookingMapped, bookings, rentals);
 
-                if (allUnitsAccupied)
+                if (allUnitsOccupied)
                 {
                     throw new ApplicationException(VacationRentalConstants.NotAvailableErrorMessage);
                 }

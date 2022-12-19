@@ -18,20 +18,9 @@ namespace VacationRental.Api.Tests
         }
 
         [Fact]
-        public async Task GivenNoRentals_WhenGetCalendar_ThenAGetReturnsAnError()
-        {
-            _fixture = new IntegrationFixture();
-
-            using (var getCalendarResponse = await _fixture.Client.GetAsync($"/api/v1/calendar?rentalId={1}&start=2000-01-01&nights=5"))
-            {
-                Assert.False(getCalendarResponse.IsSuccessStatusCode);
-                Assert.Equal(HttpStatusCode.InternalServerError, getCalendarResponse.StatusCode);
-            }
-        }
-
-        [Fact]
         public async Task GivenCompleteRequest_WhenGetCalendar_ThenAGetReturnsTheCalculatedCalendar()
         {
+            // Arrange
             var postRentalRequest = new RentalBindingModel
             {
                 Units = 2,
@@ -73,8 +62,10 @@ namespace VacationRental.Api.Tests
                 postBooking2Result = await postBooking2Response.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            // Act
             using (var getCalendarResponse = await _fixture.Client.GetAsync($"/api/v1/calendar?rentalId={postRentalResult.Id}&start=2000-01-01&nights=5"))
             {
+                // Assert
                 Assert.True(getCalendarResponse.IsSuccessStatusCode);
 
                 var getCalendarResult = await getCalendarResponse.Content.ReadAsAsync<CalendarViewModel>();
@@ -100,6 +91,21 @@ namespace VacationRental.Api.Tests
 
                 Assert.Equal(new DateTime(2000, 01, 05), getCalendarResult.Dates[4].Date);
                 Assert.Empty(getCalendarResult.Dates[4].Bookings);
+            }
+        }
+
+        [Fact]
+        public async Task GivenNoRentals_WhenGetCalendar_ThenAGetReturnsAnError()
+        {
+            // Arrange
+            _fixture = new IntegrationFixture();
+
+            // Act
+            using (var getCalendarResponse = await _fixture.Client.GetAsync($"/api/v1/calendar?rentalId={1}&start=2000-01-01&nights=5"))
+            {
+                // Assert
+                Assert.False(getCalendarResponse.IsSuccessStatusCode);
+                Assert.Equal(HttpStatusCode.InternalServerError, getCalendarResponse.StatusCode);
             }
         }
     }

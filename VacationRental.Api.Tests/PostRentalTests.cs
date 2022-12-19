@@ -19,6 +19,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenCompleteRequest_WhenPostRental_ThenAGetReturnsTheCreatedRental()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = 25,
@@ -32,8 +33,10 @@ namespace VacationRental.Api.Tests
                 postResult = await postResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            // Act
             using (var getResponse = await _fixture.Client.GetAsync($"/api/v1/rentals/{postResult.Id}"))
             {
+                // Assert
                 Assert.True(getResponse.IsSuccessStatusCode);
 
                 var getResult = await getResponse.Content.ReadAsAsync<RentalViewModel>();
@@ -44,15 +47,17 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenUnitsIsNotPositive_WhenPostRental_ThenAPostReturnsAnError()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = -1,
                 PreparationTimeInDays = 2
             };
 
-            ErrorDetailsModel postResult;
+            // Act
             using (var postResponse = await _fixture.Client.PostAsJsonAsync($"/api/v1/rentals", request))
             {
+                // Assert
                 Assert.False(postResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
             }
@@ -61,15 +66,17 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenPreparationTimeInDaysIsNotPositive_WhenPostRental_ThenAPostReturnsAnError()
         {
+            // Arrange
             var request = new RentalBindingModel
             {
                 Units = -1,
                 PreparationTimeInDays = 2
             };
 
-            ErrorDetailsModel postResult;
+            // Act
             using (var postResponse = await _fixture.Client.PostAsJsonAsync($"/api/v1/rentals", request))
             {
+                // Assert
                 Assert.False(postResponse.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, postResponse.StatusCode);
             }

@@ -20,6 +20,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenCompleteRequest_WhenPostBooking_ThenAGetReturnsTheCreatedBooking()
         {
+            // Arrange
             var postRentalRequest = new RentalBindingModel
             {
                 Units = 4,
@@ -47,8 +48,10 @@ namespace VacationRental.Api.Tests
                 postBookingResult = await postBookingResponse.Content.ReadAsAsync<ResourceIdViewModel>();
             }
 
+            // Act
             using (var getBookingResponse = await _fixture.Client.GetAsync($"/api/v1/bookings/{postBookingResult.Id}"))
             {
+                // Assert
                 Assert.True(getBookingResponse.IsSuccessStatusCode);
 
                 var getBookingResult = await getBookingResponse.Content.ReadAsAsync<BookingViewModel>();
@@ -61,6 +64,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenCompleteRequest_WhenPostBooking_ThenAPostReturnsAnErrorWhenThereIsOverbooking()
         {
+            // Arrange
             var postRentalRequest = new RentalBindingModel
             {
                 Units = 1,
@@ -93,8 +97,10 @@ namespace VacationRental.Api.Tests
                 Start = new DateTime(2002, 01, 02)
             };
 
+            // Act
             using (var postBooking2Response = await _fixture.Client.PostAsJsonAsync($"/api/v1/bookings", postBooking2Request))
             {
+                // Assert
                 Assert.False(postBooking2Response.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.InternalServerError, postBooking2Response.StatusCode);
             }
@@ -103,6 +109,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenNightsInputNotPositive_WhenPostBooking_ThenAPostReturnsAnError()
         {
+            // Arrange
             var postRentalRequest = new RentalBindingModel
             {
                 Units = 1,
@@ -123,8 +130,10 @@ namespace VacationRental.Api.Tests
                 Start = new DateTime(2002, 01, 01)
             };
 
+            // Act
             using (var postBooking2Response = await _fixture.Client.PostAsJsonAsync($"/api/v1/bookings", postBookingRequest))
             {
+                // Assert
                 Assert.False(postBooking2Response.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, postBooking2Response.StatusCode);
             }
@@ -133,6 +142,7 @@ namespace VacationRental.Api.Tests
         [Fact]
         public async Task GivenNoRentals_WhenPostBooking_ThenAPostReturnsAnError()
         {
+            // Arrange
             var postBookingRequest = new BookingBindingModel
             {
                 RentalId = 1,
@@ -140,8 +150,10 @@ namespace VacationRental.Api.Tests
                 Start = new DateTime(2002, 01, 01)
             };
 
+            // Act
             using (var postBooking2Response = await _fixture.Client.PostAsJsonAsync($"/api/v1/bookings", postBookingRequest))
             {
+                // Assert
                 Assert.False(postBooking2Response.IsSuccessStatusCode);
                 Assert.Equal(HttpStatusCode.BadRequest, postBooking2Response.StatusCode);
             }
