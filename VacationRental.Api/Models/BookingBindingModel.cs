@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using VacationRental.Api.Core;
 
 namespace VacationRental.Api.Models
 {
@@ -13,6 +15,9 @@ namespace VacationRental.Api.Models
         }
 
         private DateTime _startIgnoreTime;
+
+        [Range(VacationRentalConstants.MinimumValue, int.MaxValue, 
+            ErrorMessage = VacationRentalConstants.NightCountErrorMessage)]
         public int Nights { get; set; }
     }
 }
